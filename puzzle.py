@@ -61,20 +61,22 @@ way = [[0, 0], [0, -2], [1, -1], [2, 0], [1, 1],
 count = 0
 def dfs(layer):
     global count
-    if (count == 10):
-        return
+    # if (count == 10):
+    #     return
     if (layer == 10):
-        for i in range(9):
-            for j in range(9):
-                if (board[i][j] == 1):
-                    print('O', end=' ')
-                elif (vis[i][j] != False):
-                    print(vis[i][j], end=' ')
-                else:
-                    print(' ', end=' ')
-            print('')
-        print('')
         count += 1
+        if (count % 1000 == 0):
+            print('count : ' , count)
+            for i in range(9):
+                for j in range(9):
+                    if (board[i][j] == 1):
+                        print('O', end=' ')
+                    elif (vis[i][j] != False):
+                        print(vis[i][j], end=' ')
+                    else:
+                        print(' ', end=' ')
+                print('')
+            print('')
         return
     if (used[layer] == True):
         dfs(layer + 1)
@@ -178,19 +180,19 @@ def dfs(layer):
                         vis[j + way[puzzle[layer][p][2]][1]][i + way[puzzle[layer][p][2]][0]] = False
 
 
-is_using = 5
-used[is_using] = True
-vis[2][5] = is_using
-vis[3][4] = is_using
-vis[5][4] = is_using
-vis[6][5] = is_using
+# is_using = 5
+# used[is_using] = True
+# vis[2][5] = is_using
+# vis[3][4] = is_using
+# vis[5][4] = is_using
+# vis[6][5] = is_using
 
-is_using = 1
-used[is_using] = True
-vis[7][6] = is_using
-vis[8][3] = is_using
-vis[8][5] = is_using
-vis[8][7] = is_using
+# is_using = 1
+# used[is_using] = True
+# vis[7][6] = is_using
+# vis[8][3] = is_using
+# vis[8][5] = is_using
+# vis[8][7] = is_using
 
 dfs(1)
 print(count)
