@@ -59,13 +59,13 @@ way = [[0, 0], [0, -2], [1, -1], [2, 0], [1, 1],
      #    下      左下      左        左上
 #//////////////////////////////////////////////////////////////////////////////////
 count = 0
-def dfs(layer):
+def dfs(layer, a):
     global count
     # if (count == 10):
     #     return
     if (layer == 10):
         count += 1
-        if (count % 1000 == 0):
+        if (a == '1'):
             print('count : ' , count)
             for i in range(9):
                 for j in range(9):
@@ -79,17 +79,15 @@ def dfs(layer):
             print('')
         return
     if (used[layer] == True):
-        dfs(layer + 1)
+        dfs(layer + 1, a)
     for j in range(9):
         for i in range(9):
             if(vis[j][i] != False):
                 continue
-            # print(j, i)
             for p in range(len(puzzle[layer])):
                 is_possible = True
                 for q in range(3):
                     direct = puzzle[layer][p][q]
-                    # print(direct)
                     temp = 99
                     bufferX = 0
                     bufferY = 0
@@ -106,7 +104,6 @@ def dfs(layer):
                         else:
                             temp = 0#是否有移動的第二步
                             if (direct > 10):
-                                # print(direct)
                                 temp = direct%10#有的話temp不為0,99
                                 direct = math.floor(direct/10)
                             prebufferX = i
@@ -115,7 +112,6 @@ def dfs(layer):
                             bufferY = j + way[direct][1]  
                         # print(j, i, bufferY, bufferX,'direct : ' ,direct)
                         if (bufferX > 8 or bufferX <0 or bufferY > 8 or bufferY < 0):
-                            # print('HI1')
                             is_possible = False
                             break
                         if (vis[bufferY][bufferX] != False):
@@ -124,28 +120,23 @@ def dfs(layer):
                         if (direct == 1 or direct == 5):
                             bufferX = prebufferX + way[direct][0]
                             bufferY = prebufferY + int(way[direct][1]/2)
-                            # print(bufferX, bufferY)
                             if (layer == 6):
                                 if (board[bufferY][bufferX] == 0):#6的中間必須是牆
                                     is_possible = False
-                                    # print('HI')
                                     break
                             else:
                                 if (board[bufferY][bufferX] == 1):#上下遇到牆
                                     is_possible = False
-                                    # print('HI2')
                                     break
                         if (direct == 3 or direct == 7):
                             bufferX = prebufferX + int(way[direct][0]/2)
                             bufferY = prebufferY + way[direct][1]
                             if (layer == 6):
                                 if (board[bufferY][bufferX] == 0):#6的中間必須是牆
-                                    # print('HI')
                                     is_possible = False
                                     break
                             else:
                                 if (board[bufferY][bufferX] == 1):#左右遇到牆
-                                    # print('HI3')
                                     is_possible = False
                                     break
                         bufferX = i + way[direct][0]
@@ -154,19 +145,18 @@ def dfs(layer):
                         break
 
                 if (is_possible == True):
-                    # print('HI')
                     vis[j][i] = layer#將四個點設為vis = layer 分辨數字
                     vis[j + way[puzzle[layer][p][0]][1]][i + way[puzzle[layer][p][0]][0]] = layer
                     vis[j + way[puzzle[layer][p][1]][1]][i + way[puzzle[layer][p][1]][0]] = layer
                     direct = puzzle[layer][p][2]
                     if (direct > 10):
-                        temp = direct%10#有的話temp不為0,99
+                        temp = direct%10
                         direct = math.floor(direct/10)
                         vis[j + way[direct][1] + way[temp][1]][i + way[direct][0] + way[temp][0]] = layer
                     else:
                         vis[j + way[puzzle[layer][p][2]][1]][i + way[puzzle[layer][p][2]][0]] = layer
 
-                    dfs(layer+1)
+                    dfs(layer+1, a)
                     #將四個點vis = False
                     vis[j][i] = False
                     vis[j + way[puzzle[layer][p][0]][1]][i + way[puzzle[layer][p][0]][0]] = False
@@ -194,7 +184,21 @@ def dfs(layer):
 # vis[8][5] = is_using
 # vis[8][7] = is_using
 
-dfs(1)
-print(count)
-# print(puzzle)
+print('請輸入固定數量 : ',end = '')
+n = int(input())
+
+for i in range(n):
+    print('請輸入固定編號 : ',end = '')
+    is_using = int(input())
+    used[is_using] = True
+    for j in range(4):
+        print('請輸入固定位置 : ',end = '')
+        c, d = input().split()
+        vis[int(c)][int(d)] = is_using
+
+print('是否顯示答案(輸入1會顯示) : ')
+a = input()
+dfs(1, a)
+print('共', count, '種可能', end = '')
+a = input()
 
