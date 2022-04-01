@@ -12,7 +12,7 @@ vis = [[False]*9 for i in range(9)]
 for i in range(9):
     for j in range(9):
         if (i%2 == 1 and j%2 == 1):
-            vis[i][j] = 1
+            vis[i][j] = 10
 used = [False for i in range(10)]
 puzzle = ['' for i in range(10)] 
 puzzle[1] = [[6,8,81], [8,2,23], [2,4,45], [4,6,67]] #旋轉 第三維為各點位置
@@ -61,7 +61,7 @@ way = [[0, 0], [0, -2], [1, -1], [2, 0], [1, 1],
 count = 0
 def dfs(layer, a):
     global count
-    # if (count == 10):
+    # if (count == 100):
     #     return
     if (layer == 10):
         count += 1
@@ -111,7 +111,7 @@ def dfs(layer, a):
                             bufferX = i + way[direct][0]
                             bufferY = j + way[direct][1]  
                         # print(j, i, bufferY, bufferX,'direct : ' ,direct)
-                        if (bufferX > 8 or bufferX <0 or bufferY > 8 or bufferY < 0):
+                        if (bufferX > 8 or bufferX < 0 or bufferY > 8 or bufferY < 0):
                             is_possible = False
                             break
                         if (vis[bufferY][bufferX] != False):
@@ -125,7 +125,7 @@ def dfs(layer, a):
                                     is_possible = False
                                     break
                             else:
-                                if (board[bufferY][bufferX] == 1):#上下遇到牆
+                                if (vis[bufferY][bufferX] != False):#上下遇到牆
                                     is_possible = False
                                     break
                         if (direct == 3 or direct == 7):
@@ -136,7 +136,7 @@ def dfs(layer, a):
                                     is_possible = False
                                     break
                             else:
-                                if (board[bufferY][bufferX] == 1):#左右遇到牆
+                                if (vis[bufferY][bufferX] != False):#左右遇到牆
                                     is_possible = False
                                     break
                         bufferX = i + way[direct][0]
@@ -148,41 +148,50 @@ def dfs(layer, a):
                     vis[j][i] = layer#將四個點設為vis = layer 分辨數字
                     vis[j + way[puzzle[layer][p][0]][1]][i + way[puzzle[layer][p][0]][0]] = layer
                     vis[j + way[puzzle[layer][p][1]][1]][i + way[puzzle[layer][p][1]][0]] = layer
+                    if (layer == 5):
+                        temp = puzzle[5][p][1]
+                        if (temp == 3 or temp == 7):
+                            vis[j + way[temp][1]][i + int(way[temp][0]/2)] = layer
+                        if (temp == 1 or temp == 5):
+                            vis[j + int(way[temp][1]/2)][i + way[temp][0]] = layer
                     direct = puzzle[layer][p][2]
                     if (direct > 10):
                         temp = direct%10
                         direct = math.floor(direct/10)
+                        if (temp == 3 or temp == 7):#如果第二步要橫跨左右或上下的話，中間那格不能通過
+                            vis[j + way[direct][1] + way[temp][1]][i + way[direct][0] + int(way[temp][0]/2)] = layer
+                        if (temp == 1 or temp == 5):
+                            vis[j + way[direct][1] + int(way[temp][1]/2)][i + way[direct][0] + way[temp][0]] = layer
+                        #
                         vis[j + way[direct][1] + way[temp][1]][i + way[direct][0] + way[temp][0]] = layer
+                        
                     else:
                         vis[j + way[puzzle[layer][p][2]][1]][i + way[puzzle[layer][p][2]][0]] = layer
 
                     dfs(layer+1, a)
-                    #將四個點vis = False
-                    vis[j][i] = False
+                    
+                    vis[j][i] = False  #將四個點vis = False
                     vis[j + way[puzzle[layer][p][0]][1]][i + way[puzzle[layer][p][0]][0]] = False
                     vis[j + way[puzzle[layer][p][1]][1]][i + way[puzzle[layer][p][1]][0]] = False
+                    if (layer == 5):
+                        temp = puzzle[layer][p][1]
+                        if (temp == 3 or temp == 7):
+                            vis[j + way[temp][1]][i + int(way[temp][0]/2)] = False
+                        if (temp == 1 or temp == 5):
+                            vis[j + int(way[temp][1]/2)][i + way[temp][0]] = False
                     direct = puzzle[layer][p][2]
                     if (direct > 10):
-                        temp = direct%10#有的話temp不為0,99
+                        temp = direct%10
                         direct = math.floor(direct/10)
+                        if (temp == 3 or temp == 7):
+                            vis[j + way[direct][1] + way[temp][1]][i + way[direct][0] + int(way[temp][0]/2)] = False
+                        if (temp == 1 or temp == 5):
+                            vis[j + way[direct][1] + int(way[temp][1]/2)][i + way[direct][0] + way[temp][0]] = False
+                        #
                         vis[j + way[direct][1] + way[temp][1]][i + way[direct][0] + way[temp][0]] = False
                     else:
                         vis[j + way[puzzle[layer][p][2]][1]][i + way[puzzle[layer][p][2]][0]] = False
 
-
-# is_using = 5
-# used[is_using] = True
-# vis[2][5] = is_using
-# vis[3][4] = is_using
-# vis[5][4] = is_using
-# vis[6][5] = is_using
-
-# is_using = 1
-# used[is_using] = True
-# vis[7][6] = is_using
-# vis[8][3] = is_using
-# vis[8][5] = is_using
-# vis[8][7] = is_using
 
 print('請輸入固定數量 : ',end = '')
 n = int(input())
@@ -190,8 +199,11 @@ n = int(input())
 for i in range(n):
     print('請輸入固定編號 : ',end = '')
     is_using = int(input())
+    j_range = 4
+    if (is_using == 1 or is_using == 3 or is_using == 5 ):
+        j_range = 5
     used[is_using] = True
-    for j in range(4):
+    for j in range(j_range):
         print('請輸入固定位置 : ',end = '')
         c, d = input().split()
         vis[int(c)][int(d)] = is_using
@@ -201,4 +213,3 @@ a = input()
 dfs(1, a)
 print('共', count, '種可能', end = '')
 a = input()
-
