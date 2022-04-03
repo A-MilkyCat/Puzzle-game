@@ -9,7 +9,7 @@ vector <pair<int,int> > v;
 int show[14][6][10]{};
 int oper[14]{};
 long long int c = 0;
-ofstream c2("¥i¯àªº¸Ñ(§t¤£¦P¤è¦V).txt");
+ofstream c2("å¯èƒ½çš„è§£(å«ä¸åŒæ–¹å‘).txt");
 void sh(int mov){
     for (int j=1;j<=5;j++){
         for (int k=1;k<=9;k++){
@@ -24,11 +24,11 @@ void sh(int mov){
     }
 }
 void dfs(int y,int x,int mov){
-	a[y][x] = 2;//¨SªF¦è¤F (0:¨S®æ¤l¡A1:¦³ªF¦è 
+	a[y][x] = 2;//æ²’æ±è¥¿äº† (0:æ²’æ ¼å­ï¼Œ1:æœ‰æ±è¥¿ 
     v.push_back({y,x});
     sh(mov);
     if (v.size()==14){
-    	//if (!(c%1000)){//¿é¥X 
+    	//if (!(c%1000)){//è¼¸å‡º 
 	    	c2 << c+1 << ':' << endl;
 	    	for (int j=1;j<=5;j++){
 				for (int i=0;i<7;i++){
@@ -186,12 +186,12 @@ int main(){
     for (int i=0;i<10;i++)
         for (int j=90;j<15;j++)
             a[i][j] = false;
-   // dfs(1,5,0);
-   // dfs(2,4,0);
-    //dfs(2,6,0);
-    //dfs(3,3,0);
-    dfs(3,5,0);
-    /*dfs(3,7,0);
+   // dfs(1,5,0);//ç¬¬1æ’ç¬¬1å€‹
+   // dfs(2,4,0);//ç¬¬2æ’ç¬¬1å€‹
+    //dfs(2,6,0);//ç¬¬2æ’ç¬¬2å€‹
+    //dfs(3,3,0);//ç¬¬3æ’ç¬¬1å€‹
+    dfs(3,5,0);//ç¬¬3æ’ç¬¬3å€‹
+    /*dfs(3,7,0);//ä»¥æ­¤é¡æ¨.......
     dfs(4,2,0);
     dfs(4,4,0);
     dfs(4,6,0);
